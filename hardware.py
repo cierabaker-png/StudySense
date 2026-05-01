@@ -1,7 +1,5 @@
-#Header
-#Project title: StudySense
-#Team name: Group 31
-#Team members: Ciera Baker, Aleena Peter, Oluwagbemiga Akinsola
+#This is the file used for the hardware. 
+#You can decide not to use the hardware and stick with the simulation
 
 import time
 from time import sleep
