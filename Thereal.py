@@ -1,7 +1,5 @@
-#Header
-#Project title: StudySense
-#Team name: Group 31
-#Team members: Ciera Baker, Aleena Peter, Oluwagbemiga Akinsola
+#This file contains the logic for the study session as well as the information saved into the json file
+
 import time
 from datetime import datetime
 import hardware as hw
