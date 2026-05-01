@@ -1,0 +1,139 @@
+#Header
+#Project title: StudySense
+#Team name: Group 31
+#Team members: Ciera Baker, Aleena Peter, Oluwagbemiga Akinsola
+
+import time
+from time import sleep
+from pynput import keyboard
+
+# Try real hardware
+try:
+    import RPi.GPIO as GPIO
+    REAL_HARDWARE = True
+except:
+    REAL_HARDWARE = False
+    
+simulated_distance = 10.0
+
+def on_press(key):
+    global simulated_distance
+    try:
+        if key.char == 'f': # Press 'f' to move phone FAR
+            simulated_distance = 25.0
+            print("\n[SIM] Phone moved AWAY")
+        elif key.char == 'n': # Press 'n' to move phone NEAR
+            simulated_distance = 10.0
+            print("\n[SIM] Phone put BACK")
+    except AttributeError:
+        pass
+if not REAL_HARDWARE:
+    listener = keyboard.Listener(on_press=on_press)
+    listener.start()
+# ======================
+# CONSTANTS
+# ======================
+TRIGGER_TIME = 0.00001
+SPEED_OF_SOUND = 343
+
+# GPIO pins (only used if real)
+TRIG = 18
+ECHO = 27
+BUZZER = 22
+RED = 16
+GREEN = 17
+
+# ======================
+# SETUP (only if real)
+# ======================
+if REAL_HARDWARE:
+    GPIO.setmode(GPIO.BCM)
+
+    GPIO.setup(TRIG, GPIO.OUT)
+    GPIO.setup(ECHO, GPIO.IN)
+
+    GPIO.setup(RED, GPIO.OUT)
+    GPIO.output(RED, GPIO.LOW)
+    
+    GPIO.setup(GREEN, GPIO.OUT)
+    GPIO.output(GREEN, GPIO.LOW)
+
+    GPIO.setup(BUZZER, GPIO.OUT)
+    GPIO.output(BUZZER, GPIO.HIGH)
+
+# ======================
+# SENSOR
+# ======================
+def get_distance():
+    if REAL_HARDWARE:
+        GPIO.output(TRIG, GPIO.HIGH)
+        sleep(TRIGGER_TIME)
+        GPIO.output(TRIG, GPIO.LOW)
+
+        while GPIO.input(ECHO) == GPIO.LOW:
+            start = time.time()
+
+        while GPIO.input(ECHO) == GPIO.HIGH:
+            end = time.time()
+
+        duration = end - start
+        distance = (duration * SPEED_OF_SOUND) / 2
+        return distance * 100  # cm
+
+    else:
+        # SIMULATION MODE
+        return simulated_distance # sometimes "far" to trigger violation
+
+# ======================
+# OUTPUTS
+# ======================
+def buzz(duration=0.5):
+    if REAL_HARDWARE:
+        GPIO.output(BUZZER, GPIO.LOW)
+        sleep(duration)
+        GPIO.output(BUZZER, GPIO.HIGH)
+    else:
+        print(f"[SIM] BUZZ {duration}s")
+
+
+def red_on():
+    if REAL_HARDWARE:
+        GPIO.output(RED, GPIO.HIGH)
+    else:
+        print("[SIM] RED ON")
+
+
+def red_off():
+    if REAL_HARDWARE:
+        GPIO.output(RED, GPIO.LOW)
+    else:
+        print("[SIM] RED OFF")
+        
+def green_on():
+    if REAL_HARDWARE:
+        GPIO.output(GREEN, GPIO.HIGH)
+    else:
+        print("[SIM] GREEN ON")
+
+
+def green_off():
+    if REAL_HARDWARE:
+        GPIO.output(GREEN, GPIO.LOW)
+    else:
+        print("[SIM] GREEN OFF")
+
+
+def green_blink(duration=0.2):
+    if REAL_HARDWARE:
+        GPIO.output(GREEN, GPIO.HIGH)
+        sleep(duration)
+        GPIO.output(GREEN, GPIO.LOW)
+    else:
+        print("[SIM] GREEN BLINK")
+
+# ======================
+# CLEANUP
+# ======================
+def cleanup():
+    if REAL_HARDWARE:
+        GPIO.cleanup()
