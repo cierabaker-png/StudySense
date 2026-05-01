@@ -1,7 +1,5 @@
-#Header
-#Project title: StudySense
-#Team name: Group 31
-#Team members: Ciera Baker, Aleena Peter, Oluwagbemiga Akinsola
+#This is the Ui file. Here you will find styling with some logic as well. 
+
 from kivy.core.window import Window
 from kivy.app import App
 from kivy.uix.widget import Widget
